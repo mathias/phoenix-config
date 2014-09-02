@@ -34,12 +34,8 @@
 ;; ## Math helpers
 
 (defn round [num] (.round js/Math num))
-(defn half [num] (/ num 2))
 
-;; ## Grid settings
-
-(def grid-width 2)
-(def grid-height 2)
+;; ## Grid functions
 
 (defn calculate-grid
   ([coords]
