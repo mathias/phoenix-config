@@ -29,58 +29,61 @@
 
 (def Window js/Window)
 (def api js/api)
+(def focusedWindow #(.focusedWindow Window))
 
 ;; ## Math helpers
 
 (defn round [num] (.round js/Math num))
 (defn half [num] (/ num 2))
 
+;; ## Grid settings
+
+(def grid-width 2)
+(def grid-height 2)
+
+(defn calculate-grid
+  ([coords]
+     (calculate-grid (focusedWindow) coords))
+  ([win {:keys [x y width height]}]
+     (let [screen (.. win screen frameWithoutDockOrMenu)]
+       (clj->js {:x (round (+ (* x (.-width screen)) (.-x screen)))
+                 :y (round (+ (* y (.-height screen)) (.-y screen)))
+                 :width (round (* width (.-width screen)))
+                 :height (round (* height (.-height screen)))}))))
+
+(defn size-to-grid [coords]
+  (let [win (focusedWindow)]
+    (.setFrame win (calculate-grid win coords))))
+
 ;; ## Movement functions
 
 (defn push-left []
-  (let [win (.focusedWindow Window)
-        frame (.frame win)
-        screen (.. win screen frameWithoutDockOrMenu)]
-    (aset frame "x" (.-x screen))
-    (aset frame "y" (.-y screen))
-
-    (aset frame "width" (round (half (.-width screen))))
-    (aset frame "height" (.-height screen))
-
-    (.setFrame win frame)))
+  (size-to-grid {:x 0
+                 :y 0
+                 :width 0.5
+                 :height 1}))
 
 (defn push-right []
-  (let [win (.focusedWindow Window)
-        frame (.frame win)
-        screen (.. win screen frameWithoutDockOrMenu)]
-    (aset frame "x" (+ (.-x screen) (half (.-width screen))))
-    (aset frame "y" (.-y screen))
-
-    (aset frame "width" (round (half (.-width screen))))
-    (aset frame "height" (.-height screen))
-
-    (.setFrame win frame)))
+  (size-to-grid {:x 0.5
+                 :y 0
+                 :width 0.5
+                 :height 1}))
 
 (defn center-window []
-  (let [win (.focusedWindow Window)
-        frame (.frame win)
-        screen (.. win screen frameWithoutDockOrMenu)]
-    (aset frame "x" (/ (.-width screen) 4))
-    (aset frame "y" (.-y screen))
+  (size-to-grid {:x 0.25
+                 :y 0
+                 :width 0.5
+                 :height 1}))
 
-    (aset frame "width" (round (half (.-width screen))))
-    (aset frame "height" (.-height screen))
-
-    (.setFrame win frame)))
-
-(defn fullscreen []
-  (let [win (.focusedWindow Window)
-        screen (.. win screen frameWithoutDockOrMenu)]
-    (.setFrame win screen)))
+(defn to-full-screen []
+  (size-to-grid {:x 0
+                 :y 0
+                 :width 1
+                 :height 1}))
 
 (def mash (js/Array. "ctrl" "alt" "cmd"))
 
 (.bind api "left" mash push-left)
 (.bind api "right" mash push-right)
 (.bind api "c" mash center-window)
-(.bind api "m" mash fullscreen)
+(.bind api "m" mash to-full-screen)
