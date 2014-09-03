@@ -77,9 +77,14 @@
                  :width 1
                  :height 1}))
 
+;; ## Keybindings
+
 (def mash (js/Array. "ctrl" "alt" "cmd"))
 
-(.bind api "left" mash push-left)
-(.bind api "right" mash push-right)
-(.bind api "c" mash center-window)
-(.bind api "m" mash to-full-screen)
+(defn bind [letter chord fn]
+  (.bind api letter chord fn))
+
+(bind "left" mash push-left)
+(bind "right" mash push-right)
+(bind "c" mash center-window)
+(bind "m" mash to-full-screen)
