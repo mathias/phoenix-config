@@ -27,9 +27,13 @@
 
 ;; ## Phoenix Globals
 
+(def App js/App)
 (def Window js/Window)
 (def api js/api)
-(def focusedWindow #(.focusedWindow Window))
+(def focused-window #(.focusedWindow Window))
+
+;; ClojureScript's `map` has issues, so we use the included Underscore map fn:
+(def _map #(.map js/_ %2 %1))
 
 ;; ## Math helpers
 
@@ -37,14 +41,13 @@
 
 ;; ## Development helpers
 
-(defn debug [message]
-  (.alert api message 10))
+(defn debug [message] (.alert api message 10))
 
 ;; ## Grid functions
 
 (defn calculate-grid
   ([coords]
-     (calculate-grid (focusedWindow) coords))
+     (calculate-grid (focused-window) coords))
   ([win {:keys [x y width height]}]
      (let [screen (.. win screen frameWithoutDockOrMenu)]
        (clj->js {:x (round (+ (* x (.-width screen)) (.-x screen)))
@@ -53,8 +56,11 @@
                  :height (round (* height (.-height screen)))}))))
 
 (defn size-to-grid [coords]
-  (let [win (focusedWindow)]
+  (let [win (focused-window)]
     (.setFrame win (calculate-grid win coords))))
+
+;; ## Layouts
+
 
 ;; ## Movement functions
 
@@ -82,8 +88,34 @@
                  :width 1
                  :height 1}))
 
+
+;; ## Window focus operations
+
+(defn visible-windows []
+  (.visibleWindowsMostRecentFirst Window))
+
+(defn app-for-win [win]
+  (.app win))
+
+(defn hide [win]
+  (.hide (app-for-win win)))
+
+(defn hide-all []
+  (_map hide (visible-windows)))
+
+;; ## Application launching
+
+;; (defn app-title [app]
+;;   (.title app))
+
+;; (defn app-with-name [app]
+;;   (condp = app
+;;     "iterm" "iTerm"
+;;     "emacs" "Emacs"))
+
 ;; ## Keybindings
 
+(def empty-mods (js/Array.))
 (def mash (js/Array. "ctrl" "alt" "cmd"))
 
 (defn bind [letter chord fn]
@@ -93,5 +125,6 @@
 (bind "right" mash push-right)
 (bind "c" mash center-window)
 (bind "m" mash to-full-screen)
+(bind "h" mash hide-all)
 
-(bind "a" mash #(debug "testing"))
+
