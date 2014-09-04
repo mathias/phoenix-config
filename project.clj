@@ -9,5 +9,5 @@
             [lein-marginalia "0.7.1"]]
   :cljsbuild { :builds [{:source-paths ["src"]
                          :compiler {:output-to "target/phoenix.js"
-                                    :optimizations :whitespace
+                                    :optimizations :advanced
                                     :pretty-print true}}]})
