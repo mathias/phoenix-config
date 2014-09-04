@@ -35,6 +35,11 @@
 
 (defn round [num] (.round js/Math num))
 
+;; ## Development helpers
+
+(defn debug [message]
+  (.alert api message 10))
+
 ;; ## Grid functions
 
 (defn calculate-grid
@@ -88,3 +93,5 @@
 (bind "right" mash push-right)
 (bind "c" mash center-window)
 (bind "m" mash to-full-screen)
+
+(bind "a" mash #(debug "testing"))
