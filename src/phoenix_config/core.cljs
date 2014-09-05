@@ -143,6 +143,8 @@
 (bind "right" mash push-right)
 
 ;; # Capewell bindings
+(bind "k" super push-left)
+(bind "i" super push-right)
 (bind "t" super upper-left)
 (bind "n" super upper-right)
 (bind "p" super lower-left)
