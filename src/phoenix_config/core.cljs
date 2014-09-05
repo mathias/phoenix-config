@@ -34,6 +34,7 @@
 
 ;; ClojureScript's `map` has issues, so we use the included Underscore map fn:
 (def _map #(.map js/_ %2 %1))
+(def _filter #(.filter js/_ %2 %1))
 
 ;; ## Math helpers
 
@@ -88,6 +89,29 @@
                  :width 1
                  :height 1}))
 
+(defn upper-left []
+  (size-to-grid {:x 0
+                 :y 0
+                 :width 0.5
+                 :height 0.5}))
+
+(defn upper-right []
+  (size-to-grid {:x 0.5
+                 :y 0
+                 :width 0.5
+                 :height 0.5}))
+
+(defn lower-left []
+  (size-to-grid {:x 0
+                 :y 0.5
+                 :width 0.5
+                 :height 0.5}))
+
+(defn lower-right []
+  (size-to-grid {:x 0.5
+                 :y 0.5
+                 :width 0.5
+                 :height 0.5}))
 
 ;; ## Window focus operations
 
@@ -105,26 +129,26 @@
 
 ;; ## Application launching
 
-;; (defn app-title [app]
-;;   (.title app))
-
-;; (defn app-with-name [app]
-;;   (condp = app
-;;     "iterm" "iTerm"
-;;     "emacs" "Emacs"))
-
 ;; ## Keybindings
 
 (def empty-mods (js/Array.))
 (def mash (js/Array. "ctrl" "alt" "cmd"))
+(def super (js/Array. "ctrl" "cmd"))
+(def super-meta (js/Array. "alt" "cmd"))
 
 (defn bind [letter chord fn]
   (.bind api letter chord fn))
 
 (bind "left" mash push-left)
 (bind "right" mash push-right)
+
+;; # Capewell bindings
+(bind "t" super upper-left)
+(bind "n" super upper-right)
+(bind "p" super lower-left)
+(bind "l" super lower-right)
+
 (bind "c" mash center-window)
 (bind "m" mash to-full-screen)
 (bind "h" mash hide-all)
-
 
