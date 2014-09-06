@@ -43,10 +43,6 @@
 
 (def api js/api)
 
-;; ClojureScript's `map` has issues, so we use the included Underscore map fn:
-(def _map #(.map js/_ %2 %1))
-(def _filter #(.filter js/_ %2 %1))
-
 ;; ## Math helpers
 
 (defn round [num] (.round js/Math num))
@@ -112,20 +108,11 @@
           (map #(layout-window-with-offset (second browser-layout) % right-col-windows)
                (range right-col-windows)))))
 
-(defn apply-pairs [fn left right]
-  (loop [arr []
-         ls (seq left)
-         rs (seq right)]
-    (if (and ls rs)
-      (recur (apply fn [(first ls) (first rs)])
-             (next ls)
-             (next rs)))))
-
 (defn snap-all-to-layout []
   (let [layout-positions (browser-layout-positions)
         num-positions (count layout-positions)
-        wins (take num-positions (into [] (visible-windows)))]
-    (apply-pairs size-to-grid wins layout-positions)))
+        wins (take num-positions (visible-windows))]
+    (doall (map size-to-grid wins layout-positions))))
 
 (defn increase-browser-layout-rows []
   (swap! browser-layout-rows inc)
@@ -162,8 +149,8 @@
         finder-app (.find js/_ apps is-finder)
         other-apps (.reject js/_ apps is-finder)]
     (.show finder-app)
-    (_map #(.hide %) other-apps)
-    (_map #(.minimize %) (.visibleWindows finder-app))))
+    (doall (map #(.hide %) other-apps))
+    (doall (map #(.minimize %) (.visibleWindows finder-app)))))
 
 ;; ## Application launching
 
