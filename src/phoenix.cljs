@@ -141,13 +141,13 @@
   (= "Finder" (.title app)))
 
 (defn hide-all
-  "OSX doesn't really let us hide all windows but we can try to get
+  "OSX doesn't really let us hide all windows. But we can try to hide
   all of them by focusing Finder, hiding the rest, and minimizing
   Finder windows."
   []
   (let [apps (.runningApps js/App)
-        finder-app (.find js/_ apps is-finder)
-        other-apps (.reject js/_ apps is-finder)]
+        finder-app (first (filter is-finder apps))
+        other-apps (remove is-finder apps)]
     (.show finder-app)
     (doall (map #(.hide %) other-apps))
     (doall (map #(.minimize %) (.visibleWindows finder-app)))))
