@@ -25,6 +25,11 @@
 ;; <pre><code>ln -s ~/path/to/phoenix_config/target/phoenix.js ~/.phoenix.js</code></pre>
 ;;
 ;; When Phoenix.app is run, it should pick up and use the config file. Et voila!
+;;
+;; ## Extra credit
+;;
+;; Installing <https://github.com/puffnfresh/toggle-osx-shadows> will make
+;; layouts look a lot nicer!
 
 (ns phoenix-config.core)
 
