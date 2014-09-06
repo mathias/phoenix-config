@@ -62,6 +62,27 @@
 
 ;; ## Layouts
 
+(def browser-layout-rows (atom 2))
+
+(def browser-layout
+  [{:name "browser"
+    :x 0
+    :y 0
+    :width 0.5
+    :height 1}
+   {:name "apps-col"
+    :x 0.5
+    :y 0
+    :width 0.5
+    :height (/ 1 @browser-layout-rows)}])
+
+(defn increase-browser-layout-rows []
+  (swap! browser-layout-rows inc)
+  (debug (str "Right rows: " @browser-layout-rows)))
+
+(defn decrease-browser-layout-rows []
+  (swap! browser-layout-rows dec)
+  (debug (str "Right rows: " @browser-layout-rows)))
 
 ;; ## Movement functions
 
@@ -142,7 +163,7 @@
 (bind "left" mash push-left)
 (bind "right" mash push-right)
 
-;; # Capewell bindings
+;; ### Capewell bindings
 (bind "k" super push-left)
 (bind "i" super push-right)
 (bind "t" super upper-left)
@@ -154,3 +175,6 @@
 (bind "m" mash to-full-screen)
 (bind "h" mash hide-all)
 
+;; ### Layout adjustment bindings
+(bind "," super increase-browser-layout-rows)
+(bind "'" super decrease-browser-layout-rows)
