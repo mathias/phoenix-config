@@ -31,9 +31,12 @@
 ;; ## Phoenix Globals
 
 (def App js/App)
+
 (def Window js/Window)
-(def api js/api)
+(def visible-windows #(.visibleWindowsMostRecentFirst Window))
 (def focused-window #(.focusedWindow Window))
+
+(def api js/api)
 
 ;; ClojureScript's `map` has issues, so we use the included Underscore map fn:
 (def _map #(.map js/_ %2 %1))
@@ -46,6 +49,7 @@
 ;; ## Development helpers
 
 (defn debug [message] (.alert api message 5))
+(defn log [message] (.log api message))
 
 ;; ## Grid functions
 
@@ -59,9 +63,11 @@
                  :width (round (* width (.-width screen)))
                  :height (round (* height (.-height screen)))}))))
 
-(defn size-to-grid [coords]
-  (let [win (focused-window)]
-    (.setFrame win (calculate-grid win coords))))
+(defn size-to-grid
+  ([coords]
+     (size-to-grid (focused-window) coords))
+  ([win coords]
+     (.setFrame win (calculate-grid win coords))))
 
 ;; ## Layouts
 
@@ -69,11 +75,11 @@
 ;;
 ;;     (1)              (2)              (3)              (4)
 ;; +-----+---+      +-----+---+      +-----+---+      +-----+---+
-;; |     |   |      |     |   |      |     | 3 |      |     | 4 |
+;; |     |   |      |     |   |      |     | 2 |      |     | 2 |
 ;; |     |   |      |     |   |      |     |   |      |     +---+
 ;; |  1  |   |  ->  |  1  | 2 |  ->  |  1  +---+  ->  |  1  | 3 |
-;; |     |   |      |     |   |      |     | 2 |      |     +---+
-;; |     |   |      |     |   |      |     |   |      |     | 2 |
+;; |     |   |      |     |   |      |     | 3 |      |     +---+
+;; |     |   |      |     |   |      |     |   |      |     | 4 |
 ;; +-----+---+      +-----+---+      +-----+---+      +-----+---+
 
 (def browser-layout-rows (atom 2))
@@ -95,6 +101,33 @@
 (defn decrease-browser-layout-rows []
   (swap! browser-layout-rows dec)
   (debug (str "Right rows: " @browser-layout-rows)))
+
+(defn layout-window-with-offset [coords y-offset rows]
+  (merge coords {:y (/ (+ 0.0 y-offset) rows)
+                 :height (/ 1 rows)}))
+
+(defn browser-layout-positions []
+  (let [browser-layout (browser-layout)
+        right-col-windows (min (dec (count (visible-windows))) @browser-layout-rows)]
+    (debug (str "Layout with " right-col-windows " right cols"))
+    (into [(first browser-layout)]
+          (map #(layout-window-with-offset (second browser-layout) % right-col-windows)
+               (range right-col-windows)))))
+
+(defn apply-pairs [fn left right]
+  (loop [arr []
+         ls (seq left)
+         rs (seq right)]
+    (if (and ls rs)
+      (recur (apply fn [(first ls) (first rs)])
+             (next ls)
+             (next rs)))))
+
+(defn snap-all-to-layout []
+  (let [layout-positions (browser-layout-positions)
+        num-positions (count layout-positions)
+        wins (take num-positions (into [] (visible-windows)))]
+    (apply-pairs size-to-grid wins layout-positions)))
 
 ;; ## Movement functions
 
@@ -148,8 +181,7 @@
 
 ;; ## Window focus operations
 
-(defn visible-windows []
-  (.visibleWindowsMostRecentFirst Window))
+
 
 (defn app-for-win [win]
   (.app win))
@@ -157,8 +189,23 @@
 (defn hide [win]
   (.hide (app-for-win win)))
 
-(defn hide-all []
-  (_map hide (visible-windows)))
+(defn focus-window [win]
+  (.focusWindow win))
+
+(defn is-finder [app]
+  (= "Finder" (.title app)))
+
+(defn hide-all
+  "OSX doesn't really let us hide all windows but we can try to get
+  all of them by focusing Finder, hiding the rest, and minimizing
+  Finder windows."
+  []
+  (let [apps (.runningApps js/App)
+        finder-app (.find js/_ apps is-finder)
+        other-apps (.reject js/_ apps is-finder)]
+    (.show finder-app)
+    (_map #(.hide %) other-apps)
+    (_map #(.minimize %) (.visibleWindows finder-app))))
 
 ;; ## Application launching
 
@@ -174,19 +221,28 @@
 
 (bind "left" mash push-left)
 (bind "right" mash push-right)
-
-;; ### Capewell bindings
-(bind "k" super push-left)
-(bind "i" super push-right)
-(bind "t" super upper-left)
-(bind "n" super upper-right)
-(bind "p" super lower-left)
-(bind "l" super lower-right)
-
 (bind "c" mash center-window)
 (bind "m" mash to-full-screen)
 (bind "h" mash hide-all)
 
+;; ### Capewell bindings
+
+(bind "k" super push-left)
+(bind "o" super push-right)
+(bind "t" super upper-left)
+(bind "i" super upper-right)
+(bind "p" super lower-left)
+(bind "u" super lower-right)
+
+(bind "n" super center-window)
+(bind "l" super to-full-screen)
+(bind "h" super hide-all)
+
+;; ### Layout bindings
+
+(bind ";" super snap-all-to-layout)
+
 ;; ### Layout adjustment bindings
+
 (bind "," super increase-browser-layout-rows)
 (bind "'" super decrease-browser-layout-rows)
