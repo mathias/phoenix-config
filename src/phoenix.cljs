@@ -181,17 +181,6 @@
 
 ;; ## Window focus operations
 
-
-
-(defn app-for-win [win]
-  (.app win))
-
-(defn hide [win]
-  (.hide (app-for-win win)))
-
-(defn focus-window [win]
-  (.focusWindow win))
-
 (defn is-finder [app]
   (= "Finder" (.title app)))
 
