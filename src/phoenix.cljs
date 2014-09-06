@@ -2,10 +2,9 @@
 ;; [Phoenix.app](https://github.com/sdegutis/Phoenix), a lightweight
 ;; scriptable OSX window manager.
 ;;
-;; Since Phoenix is configured with JS, this project is written in
-;; ClojureScript and compiled to JavaScript. ClojureScript provides
-;; some niceties, including functional composition to build up window
-;; movement functions rather than repetition in each function.
+;; Phoenix is configured with JS, but I prefer to write ClojureScript,
+;; and so my config accomplishes many nice things in a small amount
+;; of ClojureScript.
 ;;
 ;; ## Usage
 ;;
@@ -55,14 +54,12 @@
 ;; ## Grid functions
 
 (defn calculate-grid
-  ([coords]
-     (calculate-grid (focused-window) coords))
-  ([win {:keys [x y width height]}]
-     (let [screen (.. win screen frameWithoutDockOrMenu)]
-       (clj->js {:x (round (+ (* x (.-width screen)) (.-x screen)))
-                 :y (round (+ (* y (.-height screen)) (.-y screen)))
-                 :width (round (* width (.-width screen)))
-                 :height (round (* height (.-height screen)))}))))
+  [win {:keys [x y width height]}]
+  (let [screen (.. win screen frameWithoutDockOrMenu)]
+    (clj->js {:x (round (+ (* x (.-width screen)) (.-x screen)))
+              :y (round (+ (* y (.-height screen)) (.-y screen)))
+              :width (round (* width (.-width screen)))
+              :height (round (* height (.-height screen)))})))
 
 (defn size-to-grid
   ([coords]
@@ -95,14 +92,14 @@
     :width 0.5
     :height (/ 1 @browser-layout-rows)}])
 
-
 (defn layout-window-with-offset [coords y-offset rows]
   (merge coords {:y (/ (+ 0.0 y-offset) rows)
                  :height (/ 1 rows)}))
 
 (defn browser-layout-positions []
   (let [browser-layout (browser-layout)
-        right-col-windows (min (dec (count (visible-windows))) @browser-layout-rows)]
+        num-vis-windows (count (visible-windows))
+        right-col-windows (min (dec num-vis-windows) @browser-layout-rows)]
     (debug (str "Layout with " right-col-windows " right cols"))
     (into [(first browser-layout)]
           (map #(layout-window-with-offset (second browser-layout) % right-col-windows)
@@ -110,9 +107,8 @@
 
 (defn snap-all-to-layout []
   (let [layout-positions (browser-layout-positions)
-        num-positions (count layout-positions)
-        wins (take num-positions (visible-windows))]
-    (doall (map size-to-grid wins layout-positions))))
+        wins-to-snap (take (count layout-positions) (visible-windows))]
+    (doall (map size-to-grid wins-to-snap layout-positions))))
 
 (defn increase-browser-layout-rows []
   (swap! browser-layout-rows inc)
