@@ -42,7 +42,7 @@
 
 ;; ## Development helpers
 
-(defn debug [message] (.alert api message 10))
+(defn debug [message] (.alert api message 5))
 
 ;; ## Grid functions
 
