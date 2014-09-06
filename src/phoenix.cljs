@@ -4,7 +4,7 @@
 ;;
 ;; Since Phoenix is configured with JS, this project is written in
 ;; ClojureScript and compiled to JavaScript. ClojureScript provides
-;; some niceties including functional composition to build up window
+;; some niceties, including functional composition to build up window
 ;; movement functions rather than repetition in each function.
 ;;
 ;; ## Usage
