@@ -78,14 +78,12 @@
 
 (def browser-layout-rows (atom 2))
 
-(def browser-layout
-  [{:name "browser"
-    :x 0
+(defn browser-layout []
+  [{:x 0
     :y 0
     :width 0.5
     :height 1}
-   {:name "apps-col"
-    :x 0.5
+   {:x 0.5
     :y 0
     :width 0.5
     :height (/ 1 @browser-layout-rows)}])
