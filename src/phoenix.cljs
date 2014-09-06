@@ -99,13 +99,6 @@
     :width 0.5
     :height (/ 1 @browser-layout-rows)}])
 
-(defn increase-browser-layout-rows []
-  (swap! browser-layout-rows inc)
-  (debug (str "Right rows: " @browser-layout-rows)))
-
-(defn decrease-browser-layout-rows []
-  (swap! browser-layout-rows dec)
-  (debug (str "Right rows: " @browser-layout-rows)))
 
 (defn layout-window-with-offset [coords y-offset rows]
   (merge coords {:y (/ (+ 0.0 y-offset) rows)
@@ -133,6 +126,16 @@
         num-positions (count layout-positions)
         wins (take num-positions (into [] (visible-windows)))]
     (apply-pairs size-to-grid wins layout-positions)))
+
+(defn increase-browser-layout-rows []
+  (swap! browser-layout-rows inc)
+  (snap-all-to-layout)
+  (debug (str "Right rows: " @browser-layout-rows)))
+
+(defn decrease-browser-layout-rows []
+  (swap! browser-layout-rows dec)
+  (snap-all-to-layout)
+  (debug (str "Right rows: " @browser-layout-rows)))
 
 ;; ## Movement functions
 
