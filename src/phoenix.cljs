@@ -139,53 +139,14 @@
 
 ;; ## Movement functions
 
-(defn push-left []
-  (size-to-grid {:x 0
-                 :y 0
-                 :width 0.5
-                 :height 1}))
-
-(defn push-right []
-  (size-to-grid {:x 0.5
-                 :y 0
-                 :width 0.5
-                 :height 1}))
-
-(defn center-window []
-  (size-to-grid {:x 0.25
-                 :y 0
-                 :width 0.5
-                 :height 1}))
-
-(defn to-full-screen []
-  (size-to-grid {:x 0
-                 :y 0
-                 :width 1
-                 :height 1}))
-
-(defn upper-left []
-  (size-to-grid {:x 0
-                 :y 0
-                 :width 0.5
-                 :height 0.5}))
-
-(defn upper-right []
-  (size-to-grid {:x 0.5
-                 :y 0
-                 :width 0.5
-                 :height 0.5}))
-
-(defn lower-left []
-  (size-to-grid {:x 0
-                 :y 0.5
-                 :width 0.5
-                 :height 0.5}))
-
-(defn lower-right []
-  (size-to-grid {:x 0.5
-                 :y 0.5
-                 :width 0.5
-                 :height 0.5}))
+(defn push-left      [] (size-to-grid {:x 0    :y 0   :width 0.5 :height 1}))
+(defn push-right     [] (size-to-grid {:x 0.5  :y 0   :width 0.5 :height 1}))
+(defn center-window  [] (size-to-grid {:x 0.25 :y 0   :width 0.5 :height 1}))
+(defn to-full-screen [] (size-to-grid {:x 0    :y 0   :width 1   :height 1}))
+(defn upper-left     [] (size-to-grid {:x 0    :y 0   :width 0.5 :height 0.5}))
+(defn upper-right    [] (size-to-grid {:x 0.5  :y 0   :width 0.5 :height 0.5}))
+(defn lower-left     [] (size-to-grid {:x 0    :y 0.5 :width 0.5 :height 0.5}))
+(defn lower-right    [] (size-to-grid {:x 0.5  :y 0.5 :width 0.5 :height 0.5}))
 
 ;; ## Window focus operations
 
