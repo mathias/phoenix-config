@@ -1,6 +1,6 @@
 # phoenix-config
 
-See [core.cljs](https://github.com/mathias/phoenix-config/blob/master/src/phoenix_config/core.cljs) for instructions.
+See [phoenix.cljs](https://github.com/mathias/phoenix-config/blob/master/src/phoenix.cljs) for instructions.
 
 ## License
 
