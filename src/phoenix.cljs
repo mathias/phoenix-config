@@ -9,17 +9,20 @@
 ;;
 ;; ## Usage
 ;;
-;; Install Phoenix.app, and convert this file (`src/phoenix_config/core.cljs`) to JavaScript, for use with Phoenix.app using:
+;; Install Phoenix.app: <https://github.com/jasonm23/phoenix#install>
+;; Install boot: <https://github.com/tailrecursion/boot#unix>
 ;;
-;; <pre><code>lein cljsbuild once
-;; </code></pre>
+;; Compile bindings to JS once with:
 ;;
-;; in the project directory.
+;; <pre><code>boot compile-bindings</code></pre>
+;;
+;; Or have boot watch and recompile on each change to `src/phoenix.cljs`:
+;;
+;; <pre><code>boot watch-bindings</code></pre>
 ;;
 ;; Then, symlink the configuration file into place:
 ;;
-;; <pre><code>ln -s ~/path/to/phoenix_config/target/phoenix.js ~/.phoenix.js
-;; </code></pre>
+;; <pre><code>ln -s ~/path/to/phoenix_config/target/phoenix.js ~/.phoenix.js</code></pre>
 ;;
 ;; When Phoenix.app is run, it should pick up and use the config file. Et voila!
 
