@@ -161,10 +161,15 @@
   (.bind api letter chord fn))
 
 (bind "left" mash push-left)
+
 (bind "right" mash push-right)
 (bind "c" mash center-window)
 (bind "m" mash to-full-screen)
-(bind "h" mash hide-all)
+;;(bind "h" mash hide-all)
+
+;; ### vim-style bindings for HHKB
+(bind "h" mash push-left)
+(bind "l" mash push-right)
 
 ;; ### Capewell bindings
 
