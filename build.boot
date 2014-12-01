@@ -6,7 +6,7 @@
  :project 'phoenix-config
  :version "0.0.1"
  :dependencies '[[tailrecursion/boot.task   "2.2.4"]
-                 [org.clojure/clojurescript "0.0-2322"]]
+                 [org.clojure/clojurescript "0.0-2371"]]
  :src-paths #{"src/"}
  :out-path "target/")
 
