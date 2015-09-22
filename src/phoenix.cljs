@@ -120,6 +120,26 @@
   (snap-all-to-layout)
   (debug (str "Right rows: " @browser-layout-rows)))
 
+;; ### Hangout + Docs layout
+;;
+;; In this layout, the Docs window is on the right roughly the width of a normal
+;; zoomed Google Docs document, and the Hangouts window fills up the space to
+;; the left of it as big as possible.
+;; Intended to be used on an Apple Cinema Display.
+
+(defn snap-to-hangouts-layout []
+  (let [layout-positions [{:x 0
+                           :y 0
+                           :width 0.70
+                           :height 1}
+                          {:x 0.70
+                           :y 0
+                           :width 0.3
+                           :height 1}]
+        wins-to-snap (take (count layout-positions) (visible-windows))]
+    (doall (map size-to-grid wins-to-snap layout-positions))))
+
+
 ;; ## Movement functions
 
 (defn push-left      [] (size-to-grid {:x 0    :y 0   :width 0.5 :height 1}))
@@ -187,6 +207,7 @@
 ;; ### Layout bindings
 
 (bind ";" super snap-all-to-layout)
+(bind "H" super-meta snap-to-hangouts-layout) ;; Hangouts + Docs layout
 
 ;; ### Layout adjustment bindings
 
