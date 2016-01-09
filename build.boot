@@ -1,23 +1,21 @@
-#!/usr/bin/env boot
-
-#tailrecursion.boot.core/version "2.5.1"
-
 (set-env!
- :project 'phoenix-config
- :version "0.0.1"
- :dependencies '[[tailrecursion/boot.task   "2.2.4"]
-                 [org.clojure/clojurescript "0.0-2371"]]
- :src-paths #{"src/"}
- :out-path "target/")
+  :source-paths   #{"src"}
+  :dependencies '[
+                  [org.clojure/clojure       "1.7.0"]
+                  [org.clojure/clojurescript "1.7.228"]
+                  [adzerk/boot-cljs          "1.7.170-3"       :scope "test"]])
 
-(require '[tailrecursion.boot.task :refer :all])
+(require
+  '[adzerk.boot-cljs :refer [cljs]])
 
 (deftask compile-bindings
   "Compile bindings once"
   []
-  (cljs :output-path "phoenix.js"))
+  (cljs :source-map true
+        :optimizations :simple
+        :compiler-options {:pretty-print true}))
 
-(deftask watch-bindings
-  "Compile config file to JS"
-  []
-  (comp (watch) (compile-bindings)))
+(deftask watch-bindings []
+  (comp
+   (watch)
+   (compile-bindings)))
