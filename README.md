@@ -4,7 +4,7 @@ See [phoenix_config/core.cljs](https://github.com/mathias/phoenix-config/blob/ma
 
 ## License
 
-Copyright © 2014 Matt Gauger
+Copyright © 2014-2016 Matt Gauger
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
