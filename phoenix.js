@@ -23,7 +23,7 @@
 
 /* ## Config begins here */
 
-Phoenix.notify('Phoenix config loading');
+Phoenix.notify('Phoenix config loading')
 
 /* Phoenix helper functions */
 
@@ -46,7 +46,7 @@ var log = function(message) {
   return Phoenix.log(message);
 }
 
-/* Window focus operatiosn */
+/* Window focus operations */
 
 /* Application Launching: TODO */
 
@@ -78,6 +78,10 @@ var sizeToGrid = function(coords) {
     });
   }
 }
+
+var snapAllToGrid = function() {
+  focused().map(function(win) { return win.snapToGrid(); })
+};
 
 /* Movement functions */
 var pushLeft = function() { return sizeToGrid({x: 0, y: 0, width: 0.5, height: 1}); };
